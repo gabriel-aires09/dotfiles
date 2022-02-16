@@ -9,10 +9,10 @@ I have configuration files for two window managers:
 
 Scripts for linux distributions - I will change some things later.
 
-*Ubuntu-based
-*Fedora
-*Arch-base
-*Void Linux
+* Ubuntu-based
+* Fedora
+* Arch-base
+* Void Linux
 
 Obs.: I'm not responsible if something on your system breaks. 
 
