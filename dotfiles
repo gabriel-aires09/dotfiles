@@ -1,0 +1,403 @@
+#!/bin/env bash
+
+#functions scripts
+
+arch_linux_menu () {
+	clear
+	echo "What do you want to do?
+
+	1. Take me away from here (install everything)
+	2. Update and sync first
+	3. Install the selected programs
+	4. Install AUR
+	5. Install Vundle
+	6. Install personal dotfiles
+	7. Install DWM
+	8. Install and configure DWMblocks
+	9. Install tilix dracula theme
+	"
+	read -p "Enter Selection [1-9] > "
+
+	case "$REPLY" in
+		1) arch_linux
+			exit 
+			;;
+		2) sudo pacman -Syu
+			exit
+			;;
+		3) PROGRAMS_INSTALL=(
+			tilix
+			doas 
+			xdg-user-dirs
+			xorg-xinit
+			xorg-xsetroot
+			pcmanfm
+			lsd
+			zsh
+			zsh-autosuggestions
+			zsh-syntax-highlighting
+			git
+			wget
+			dmenu
+			alsa-utils
+			neofetch
+			htop
+			feh
+			unzip
+		)
+		for name_of_program in ${PROGRAMS_INSTALL[@]}; do
+			if ! pacman -Qs | grep -q $name_of_program; then
+			pacman -S "$name_of_program"
+
+		else
+			echo "[Already install]" - $name_of_program
+		fi
+	done
+	exit
+	;;
+	  4) git clone https://aur.archlinux.org/yay.git
+			cd yay
+			make pkg -si
+			cd ~/
+			;;
+		5) echo "Installing Vundle vim"
+			git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+			exit
+			;;
+		6) git clone https://github.com/resetim/dotfiles.git
+			cd dotfiles
+			cp -p .zshrc ~/
+			cp -p .vimrc ~/
+			mv dwmblocks-distrotube $HOME
+			exit
+			;;
+		7) echo "Installing DWM..."
+			cd dwm
+			sudo make install
+			exit
+			;;
+		8) echo "installing and configuring dwmblocks..."
+			cd ~/dwmblocks-distrotube
+			cd scripts ; chmod +x clock kernel memory pacupdate upt volume
+			cd ..
+			sudo make install
+			cd
+			exit
+			;;
+		9) echo "Installing tilix dracula..."
+			mkdir -p ~/.config/tilix/schemes
+			wget https://github.com/dracula.tilix/archive/master.zip
+			unzip master
+			mv ~/tilix-master/Dracula.json ~/.config/tilix/schemes
+			exit
+			;;
+		*) echo "Invalid entry" >&2
+			exit 1
+			;;
+esac
+}
+
+arch_linux () {
+	
+	PROGRAMS_INSTALL=(
+		tilix
+		doas 
+		xdg-user-dirs
+		xorg-xinit
+		xorg-xsetroot
+		pcmanfm
+		lsd
+		zsh
+		zsh-autosuggestions
+		zsh-syntax-highlighting
+		git
+		wget
+		dmenu
+		alsa-utils
+		neofetch
+		htop
+		feh
+		unzip
+	)
+
+	#UPDATE and SYNC
+	pacman -Syu
+
+	#Script
+	for name_of_program in ${PROGRAMS_INSTALL[@]}; do
+		if ! pacman -Qs | grep -q $name_of_program; then
+			pacman -S "$name_of_program"
+		else
+			echo "[Already install]" - $name_of_program
+		fi
+	done
+
+	#AUR
+	git clone https://aur.archlinux.org/yay.git
+	cd yay
+	makepkg -si
+	cd ~/
+
+	#Vundle 
+	git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+	#POS INSTALL
+	pacman -Syu
+	pacman -Scc
+
+	#DOTFILES 
+	git clone https://github.com/resetim/dotfiles.git
+	cd dotfiles
+	cp -p .zshrc .vimrc ~/
+	mv dwmblocks-distrotube $HOME
+
+	#CREATE DOAS CONF
+	sudo touch /etc/doas.conf
+	sudo echo "permit persist :wheel" >> /etc/doas.conf
+
+	#DWMBLOCKS
+	cd ~/dwmblocks-distrotube
+	cd scripts l chmod +x clock kernel memory pacupdate upt volume
+	make install
+	cd
+
+	#UPDATE ZSH and xinit configs
+	source ~/.zshrc ; source ~/.xinitrc
+
+	#Tilix Dracula (maybe?)
+	mkdir -p ~/.config/tilix/schemes
+	wget https://github.com/dracula/tilix/archive/master.zip
+	unzip master
+	mv ~/tilix-master/Dracula.json ~/.config/tilix/schemes
+
+}
+
+fedora_menu () {
+	clear
+	echo "What do you want to do?
+	1. Install everything you need.
+	2. Update and upgrade distro
+	3. Install RPM free repositories
+	4. Install RPM non-free repositories
+	5. Install Vundle
+	6. Install default programs 
+	7. Install additional virtualizaiton options
+	8. Change shell
+	9. Enable libvirtd and virtual box
+	10. Nvidia configurations
+	11. Install Gstream/multimedia
+	12. Install flatpak
+	13. Install Brave
+	14. Show Steam options for gaming
+	0. Go back
+	"
+	read -p "Enter selection [1-14] > "
+	case "$REPLY" in
+		1) echo "Installing everything..."
+			fedora_dotfiles 
+			exit
+			;;
+		2) echo "Update and upgrade distro"
+			dnf update
+			exit
+			;;
+		3) echo "Installing RPM free repositories..."
+			dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+			exit
+			;;
+		4) echo "Installing RPM non-free repositories..."
+			dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+			exit
+			;;
+		5) echo "Installing Vundle vim"
+			git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+			exit
+			;;
+		6) echo "Installing default programs"
+			dnf install tilix zsh zsh-autosuggestions zsh-syntax-highlighting neofetch htop gcc dkms kernel-headers kernel-devel bzip2 make curl akmod-nvidiaa xorg-x11-drv-nvidia xorg-x11-drv-nvidia-libs.i686 mangohud lutris wine bpytop intel-undervolt @virtualization obs-studio virtualbox virtualbox-guest-additions vim dnf-plugins-core
+			exit
+			;;
+		7) echo "Installing additional virt options"
+			dnf group instlal --with-optional virtualization
+			exit
+			;;
+		8) echo "Changing shell..."
+			chsh -s $(which zsh)
+			exit
+			;;
+		9) echo "Enabling libvirtd and virtualbox services"
+			systemctl start libvirtd
+			systemctl enable libvirtd
+			systemctl enable vboxservice
+			systemctl start vboxservice
+			usermod -a -G vboxuser $USER
+			newgrp vboxusers
+			exit
+			;;
+		10) echo "Nvidia configuration..."
+			akmods --force
+			dracut --force
+			exit
+			;;
+		11) echo "Installing Gstream and multimedia"
+			dnf group upgrade --with-optional Multimedia
+			dnf install gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel
+			dnf install lame\* --exclude=lame-devel
+			exit
+			;;
+		12) echo "Installing flatpak"
+			flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+			exit
+			;;
+		13) echo "Installing Brave"
+			dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/x86_64/
+			sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+			dnf install brave-browser
+			exit
+			;;
+		14) echo "Steam options: __NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only mangohud gamemoderun %command%"
+			exit
+			;;
+	esac
+}
+
+fedora_dotfiles () {
+	#Update and upgrade distro
+	dnf update
+	
+	#Install RPM free and non-free repositories
+	#Free
+	dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+	#Non-Free
+	dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+
+	#Vundle
+	git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+	PROGRAMS_INSTALL=(
+		tilix
+		zsh
+		zsh-autosuggestions
+		zsh-syntax-highlighting
+		neofetch
+		htop
+		gcc
+		dkms
+		kernel-headers
+		kernel-devel
+		bzip2
+		make
+		curl
+		akmod-nvidia
+		xorg-x11-drv-nvidia
+		xorg-x11-drv-nvidia-libs
+		xorg-x11-drv-nvidia-libs.i686
+		mangohud
+		lutris
+		wine
+		bpytop
+		intel-undervolt
+		@virtualization
+		obs-studio
+		virtualbox
+		virtualbox-guest-additions
+		vim
+		dnf-plugins-core
+	)
+
+	#SCRIPT
+	for name_of_program in ${PROGRAMS_INSTALL[@]};do
+		if ! dnf repoquery | grep -q $name_of_program; then
+			dnf install "$name_of_program"
+		else
+			echo "[Already installed]" - $name_of_program
+		fi
+	done
+
+	#additional virt options
+	dnf group install --with-optional virtualization
+	
+	#Change Shell
+	chsh -s $(which zsh)
+
+	#libvirtd
+	systemctl start libvirtd
+	systemctl enable libvirtd
+
+	#virtualbox
+	systemctl enable vboxservice
+	systemctl start vboxservice
+	usermod -a -G vboxusers $USER
+	newgrp vboxusers
+
+	#Nvidia Configurations
+	akmods --force
+	dracut --force
+
+	#Gstream and multimedia
+	dnf group upgrade --with-optional Multimedia
+	dnf install gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel
+	dnf install lame\* --exclude=lame-devel
+
+	#Flatpak
+	flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+	#Brave
+	dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/x86_64/
+	rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+	dnf install brave-browser
+
+	#Steam Launch Options
+	#__NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only mangohud gamemoderun %command%
+
+	exit
+}
+
+debian_dotfiles () {
+	echo "Working in progress..."
+	exit
+}
+
+arch_dotfiles () {
+	echo "Working in progress..."
+	exit
+}
+
+#Case menu
+
+clear
+echo "Please Select > 
+
+1. Archlinux and distros without DENV
+2. Fedora dotfiles
+3. Debian and ubuntu dotfiles
+4. Arch dotfiles
+0. Leave
+"
+read -p "Enter Selection [0-4] > "
+
+case "$REPLY" in 
+	0) echo "Nothing to do."
+		exit
+		;;
+	1) echo "Installing archlinux apps and repositories..."
+		arch_linux_menu
+		exit
+		;;
+	2) echo "Installing Fedora dotfiles..."
+		fedora_menu
+		exit
+		;;
+	3) echo "Installing debian and ubuntu dotfiles..."
+		debian_dotfiles
+		exit
+		;;
+	4) echo "Installing ArchLinux dotfiles..."
+		arch_dotfiles
+		exit
+		;;
+	*) echo "Invalid entry" >&2
+		exit 1
+		;;
+esac
+
