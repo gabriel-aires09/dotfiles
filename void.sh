@@ -6,7 +6,7 @@ DWM="dwm base-devel libX11-devel libXft-devel libXinerama-devel freetype-devel f
 VUNDLE="https://github.com/gmarik/Vundle.vim.git"
 
 void_menu () {
-	while true;do
+	while true; do
 		clear
 		echo "Please select:
 		1. Install everything
@@ -19,7 +19,7 @@ void_menu () {
 		8. Install DWM
 		0. Do nothing and exit program
 		"
-		read -p "Enter Selection [0-6] > "
+		read -p "Enter Selection [0-8] > "
 		case "$REPLY" in
 			0) echo "Going back..."
 				break
@@ -51,9 +51,11 @@ void_menu () {
 				;;
 			8) echo "Installing DWM and dependencies"
 				xbps-install -S $DWM
-				*) echo "Invalid entry" >&2
-				exit 1
 				;;
+			*) echo 'Invalid entry' >&2
+				;;
+
+
 		esac
 	done
 }

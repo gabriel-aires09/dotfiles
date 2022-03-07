@@ -4,7 +4,8 @@ ubuntu_menu () {
 	while true; do
 		clear
 		echo 
-		"What do you want to do?
+		"
+		What do you want to do?
 		1. Install everything
 		2. Update and upgrade distro
 		3. Install and configure PPAS
