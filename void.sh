@@ -41,8 +41,9 @@ void_menu () {
 			5) echo "Changin shell to zsh"
 				chsh -s $(which zsh)
 				;;
-			6) echo "Moving dotfiles to Home"
+			6) echo "Moving dotfiles to Home and .config"
 				cp .vimrc .alacritty.yml .zshrc ~/
+				cp rofi picom.conf ~/.config
 				;;
 			7) echo "Install JetBrains Nerd Fonts"
 				cp -r JetBrainsMono /usr/share/fonts
