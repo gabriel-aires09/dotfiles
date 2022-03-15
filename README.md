@@ -1,4 +1,4 @@
-# Poweruser
+# .dotfiles
 
 My scripts and tweaks that I like to use for my workflow. 
 
