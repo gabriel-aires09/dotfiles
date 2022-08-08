@@ -1,19 +1,24 @@
 #!/bin/env bash
 
+# Variables
+ 
+
 menu_ubuntu () {
 	while true; do
 		clear
 		echo "What do you want to do?
-		
 		1. Install everthing
 		2. Install and configure intel-undervolt
-		3. Install essential apps
+		3. Install essential apps and adjust time
 		4. Install myLibreGaming
 		5. Install ls nextgen pls
 		6. Copy dotfiles
+		7. Download and launch unsnap
+		8. Configure Flatpak and Flathub
+		9. Install and configure bpytop
 		0. Do nothing and close the program
 		"
-		read -p "Enter Selection [0-6] > "
+		read -p "Enter Selection [0-9] > "
 		case "$REPLY" in
 			0) echo "Bye Bye!"
 				break
@@ -23,13 +28,14 @@ menu_ubuntu () {
 				;;
 			2) echo "Configuring intel-undervolt.."
 				git clone https://github.com/kitsunyan/intel-undervolt.git ; cd intel-undervolt
-				./configure --enable-systemd ; make ; make install
+				./configure --enable-systemd ; make ; make install 
 				systemctl enable intel-undervolt.service
 				systemctl status intel-undervolt.service
 				;;
 			3) echo "Installing essential apps"
-				apt update ; apt upgrade 
-				apt install build-essential git wget curl vim dconf-cli piper steam python3-pip htop neofetch obs-studio -y
+				apt update && apt upgrade 
+				apt install build-essential git wget curl vim dconf-cli piper python3-pip htop neofetch obs-studio gnome-boxes -y
+				timedatectl set-local-rtc 1
 				;;
 			4) echo "My libreGaming... POGGERS"
 				dpkg --add-architecture i386
@@ -38,24 +44,43 @@ menu_ubuntu () {
 				add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main'
 				apt update 
 				apt install --install-recommends winehq-staging
-				dpkg --add-architecture i386 && sudo apt update && sudo apt install -y wine64 wine32 libasound2-plugins:i386 libsdl2-2.0-0:i386 libdbus-1-3:i386 libsqlite3-0:i386
+				dpkg --add-architecture i386 && apt update && apt install -y wine64 wine32 libasound2-plugins:i386 libsdl2-2.0-0:i386 libdbus-1-3:i386 libsqlite3-0:i386
 				add-apt-repository ppa:lutris-team/lutris
 				add-apt-repository ppa:flexiondotorg/mangohud
-				apt install steam lutris mangohud goverlay
+				apt install lutris mangohud goverlay
 				;;
 			5) echo "Installing ls"
 				wget https://github.com/Peltoche/lsd/releases/download/0.20.1/lsd_0.20.1_amd64.deb
 				dpkg -i lsd_0.20.1_amd64.deb
 				;;
 			6) echo "Copying the most infamous dotfiles"
-				cp .bashrc .vimrc .zshrc $HOME
+				# cp -v .alacritty.yml .vimrc .zshrc $MY_HOME
+				cp .vimrc .bashrc .zshrc
 				;;
 
+
+			7) echo "Download and launch unsnap"
+				git clone https://github.com/popey/unsnap.git ; cd unsnap ; ./unsnap auto
+				;;
+			8) echo "Configure and install Flatpak and Flathub programs"
+				apt install flatpak gnome-software-plugin-flatpak -y
+				flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+				flatpak update
+        flatpak install flathub com.spotify.Client
+        flatpak install flathub com.discordapp.Discord
+        flatpak install flathub net.davidotek.pupgui2
+        flatpak install com.valvesoftware.Steam
+				;;
+			9) echo "Installing bpytop"
+				apt install python3-pip
+				pip3 install bpytop --upgrade
+				;;
 			*) echo "Invalid entry" >&2
 				;;
 		esac
 	done
 }
+
 
 everthing_ubuntu () {
 	# Update everthing before install apps
@@ -68,7 +93,7 @@ everthing_ubuntu () {
 	add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ focal main'
 	apt update 
 	apt install --install-recommends winehq-staging
-	dpkg --add-architecture i386 && sudo apt update && sudo apt install -y wine64 wine32 libasound2-plugins:i386 libsdl2-2.0-0:i386 libdbus-1-3:i386 libsqlite3-0:i386
+	dpkg --add-architecture i386 && apt update && apt install -y wine64 wine32 libasound2-plugins:i386 libsdl2-2.0-0:i386 libdbus-1-3:i386 libsqlite3-0:i386
 
 	# PPAS
 	add-apt-repository ppa:lutris-team/lutris
@@ -77,16 +102,23 @@ everthing_ubuntu () {
 
 	# APT
 	apt update ; apt upgrade 
-	apt install build-essential git wget vim dconf-cli piper steam lutris mangohud goverlay gamemode python3-pip htop neofetch obs-studio -y
+	apt install build-essential git wget vim dconf-cli piper lutris mangohud goverlay gamemode python3-pip htop neofetch obs-studio -y
 
 	# bpytop and don't forget to set PATH location where the bpytop is located, using bashrc or zshrc
 	pip3 install bpytop --upgrade
 
-	# flatPak 
+	# Unsnap
+	 git clone https://github.com/popey/unsnap.git
+   bash ~/dotfiles/unsnap/unsnap auto
+
+	# flatPak
+	apt install flatpak gnome-software-plugin-flatpak -y
+  flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 	flatpak update
 	flatpak install flathub com.spotify.Client
 	flatpak install flathub com.discordapp.Discord
 	flatpak install flathub net.davidotek.pupgui2
+	flatpak install com.valvesoftware.Steam
 
 	# intelUndervolt
 	git clone https://github.com/kitsunyan/intel-undervolt.git ; cd intel-undervolt
@@ -97,7 +129,7 @@ everthing_ubuntu () {
 	systemctl start intel-undervolt.service
 
 	# dotFiles
-	cp .vimrc .bashrc .zshrc $HOME
+	bash move_dotfiles.sh
 
 	# LS
 	wget https://github.com/Peltoche/lsd/releases/download/0.20.1/lsd_0.20.1_amd64.deb
