@@ -66,7 +66,8 @@ static const char unknown_str[] = "n/a";
 static const struct arg args[] = {
 	/* function format          argument */
 	{ ram_used, "  %sB ", 					NULL},
-	{ run_command, "  %s ",        "/home/resetim/dot/slstatus/volume"},
-	{ cpu_perc, "  %s ", 					NULL}, 
+	{ run_command, "  %s ",        "/home/resetim/dwm-6.4/slstatus/volume"},
+	{ cpu_perc, "  %s%% ", 					NULL}, 
+	{ battery_perc, "   %s%% ", 				"BAT1"},
 	{ datetime, "  %s ",           "%H:%M  %a. %d %b. %Y"},
 };

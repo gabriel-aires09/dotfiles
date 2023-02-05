@@ -1,5 +1,4 @@
 /* See LICENSE file for copyright and license details. */
-
 /* appearance */
 static const unsigned int borderpx  = 3;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -17,24 +16,28 @@ static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#6272a4";
+static const char col_cyan[]        = "#4146D1";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan },
 };
+
 
 /*cool autostart */
 static const char *const autostart[] = {
 	"picom", "-CGb", NULL,
-	"nitrogen", "--restore", NULL,
-	"xfce4-power-manager", NULL,
+	"dunst", NULL,
+	"nitrogen", "--force-setter=xinerama", "--restore", NULL, 
+	"optimus-manager-qt", NULL,
+	"blueman-applet", NULL,
 	"nm-applet", "--indicator", NULL,
+	"bash", "-c", "~/bin/monitorTwo.sh", NULL,
 	"slstatus", NULL,
 };
 
 /* tagging */
-static const char *tags[] = { " ", " ", " ", " ", " " };
+static const char *tags[] = { " ", " ", " ", " ", " ", " ", " ", " ", " " };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -54,9 +57,9 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[]=",      tile },    /* first entry is default */
-	{ "><>",      NULL },    /* no layout function means floating behavior */
-	{ "[M]",      monocle },
+	{ "[ ]=",      tile },    /* first entry is default */
+	{ "[ ]",      NULL },    /* no layout function means floating behavior */
+	{ "[ ]",      monocle },
 };
 
 /* key definitions */
@@ -71,8 +74,7 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+/*static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };*/
 static const char *roficmd[] = { "rofi", "-modi", "drun", "-show", "drun", "-line-padding 4", "-columns 2", "-padding 50", "-hide-scrollbar", "-show-icons", "-drun-icon-theme", "papirus-icon-theme", "-font", "JetBrainsMonoMedium Nerd Font 13", NULL };
 static const char *termcmd[]  = { "alacritty", NULL };
 static const char *lockcmd[] = {"xflock4", NULL };
@@ -82,9 +84,9 @@ static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = roficmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY|ShiftMask,		XK_l,	   spawn,	   {.v = lockcmd } },
-	{ MODKEY|ShiftMask,		XK_p,	   spawn,	   {.v = screencmd } },
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
+	{ MODKEY|ShiftMask,							XK_l,	   	 spawn,	  			 {.v = lockcmd } },
+	{ MODKEY|ShiftMask,							XK_p,	     spawn,	   			 {.v = screencmd } },
+	{ MODKEY,                       XK_z,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
@@ -95,7 +97,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
+	{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },

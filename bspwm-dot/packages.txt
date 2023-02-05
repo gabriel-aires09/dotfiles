@@ -1,0 +1,9 @@
+bspwm
+nitrogen
+sxhkd
+lxappearance
+rofi
+picom
+xdg-user-dirs
+papirus-icon-theme
+#ttf-nerd-fonts-symbols ; xorg-xbacklight
